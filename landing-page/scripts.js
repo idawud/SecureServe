@@ -139,35 +139,122 @@
             }
             if (field.description) label.title = field.description;
 
-            // if the field is a currency, render a searchable input + datalist populated from `currencies`
+            // if the field is a currency, render a searchable dropdown populated from `currencies`
             if (field.name === 'source_currency' || field.name === 'target_currency') {
-                const datalistId = `dl-${field.name}`;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'currency-dropdown-wrapper';
+                
                 const input = document.createElement('input');
-                input.className = 'input';
+                input.className = 'input currency-search';
                 input.name = field.name;
+                input.type = 'text';
                 if (field.required) input.setAttribute('required', '');
-                input.setAttribute('list', datalistId);
-                input.placeholder = field.placeholder || field.description || '';
+                input.placeholder = 'Search currencies...';
                 input.setAttribute('aria-label', field.description || field.name);
-
-                const dl = document.createElement('datalist');
-                dl.id = datalistId;
-                // populate options with code and label (label shows friendly text in some browsers)
-                Object.keys(currencies).sort().forEach(code => {
-                    const opt = document.createElement('option');
-                    opt.value = code;
-                    const meta = currencies[code] || {};
-                    // include a label for richer display where supported
-                    opt.label = `${code} — ${meta.name || ''} (${meta.country || ''})`;
-                    dl.appendChild(opt);
+                input.setAttribute('autocomplete', 'off');
+                
+                const dropdown = document.createElement('div');
+                dropdown.className = 'currency-dropdown-menu';
+                dropdown.style.display = 'none';
+                dropdown.style.position = 'absolute';
+                dropdown.style.background = '#fff';
+                dropdown.style.border = '1px solid #d9e6f2';
+                dropdown.style.borderRadius = '6px';
+                dropdown.style.maxHeight = '200px';
+                dropdown.style.overflowY = 'auto';
+                dropdown.style.zIndex = '1000';
+                dropdown.style.width = '100%';
+                
+                // populate dropdown options
+                const filteredCurrencies = {};
+                Object.keys(currencies).forEach(code => {
+                    if (!filteredCurrencies[code]) {
+                        filteredCurrencies[code] = currencies[code];
+                    }
                 });
-
+                
+                let isSelectingOption = false;
+                
+                function renderOptions(filter = '') {
+                    dropdown.innerHTML = '';
+                    const lowerFilter = filter.toLowerCase();
+                    let matchCount = 0;
+                    
+                    Object.keys(filteredCurrencies).sort().forEach(code => {
+                        const meta = filteredCurrencies[code];
+                        const text = `${code} — ${meta.name} (${meta.country})`.toLowerCase();
+                        
+                        if (text.includes(lowerFilter)) {
+                            matchCount++;
+                            const option = document.createElement('div');
+                            option.className = 'currency-option';
+                            option.style.padding = '8px 12px';
+                            option.style.cursor = 'pointer';
+                            option.style.borderBottom = '1px solid #eef5fb';
+                            option.textContent = `${code} — ${meta.name} (${meta.country})`;
+                            option.setAttribute('data-value', code);
+                            
+                            option.addEventListener('mousedown', (e) => {
+                                e.preventDefault();
+                                isSelectingOption = true;
+                                input.value = code;
+                                dropdown.style.display = 'none';
+                                updatePreview(endpoint.value);
+                                isSelectingOption = false;
+                            });
+                            
+                            option.addEventListener('mouseenter', () => {
+                                option.style.background = '#f0f5ff';
+                            });
+                            
+                            option.addEventListener('mouseleave', () => {
+                                option.style.background = 'transparent';
+                            });
+                            
+                            dropdown.appendChild(option);
+                        }
+                    });
+                    
+                    if (matchCount === 0 && filter) {
+                        const noMatch = document.createElement('div');
+                        noMatch.style.padding = '8px 12px';
+                        noMatch.style.color = '#6b7280';
+                        noMatch.textContent = 'No currencies found';
+                        dropdown.appendChild(noMatch);
+                    }
+                }
+                
+                input.addEventListener('focus', () => {
+                    renderOptions(input.value);
+                    dropdown.style.display = 'block';
+                });
+                
+                input.addEventListener('input', () => {
+                    renderOptions(input.value);
+                    dropdown.style.display = 'block';
+                });
+                
+                input.addEventListener('blur', () => {
+                    if (!isSelectingOption) {
+                        setTimeout(() => dropdown.style.display = 'none', 150);
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        dropdown.style.display = 'none';
+                    }
+                });
+                
                 // apply default value if provided
                 if (field.placeholder) input.value = field.placeholder;
-
+                
+                wrapper.style.position = 'relative';
+                wrapper.appendChild(input);
+                wrapper.appendChild(dropdown);
+                
                 div.appendChild(label);
-                div.appendChild(input);
-                div.appendChild(dl);
+                div.appendChild(wrapper);
             } else {
                 const input = document.createElement('input');
                 input.className = 'input';
@@ -235,12 +322,12 @@
         if (def.method === 'GET') {
             if (path === '/v1/transactions/{id}') {
                 const txId = formArea.querySelector('[name="transaction_id"]')?.value || 'tx_987654';
-                return `curl https://example.com/v1/transactions/${txId}`;
+                return `curl https://dev.secureserve.com/v1/transactions/${txId}`;
             }
-            return `curl https://example.com${path}`;
+            return `curl https://dev.secureserve.com${path}`;
         }
         const payload = gatherPayload(path) || {};
-        return `curl -X ${def.method} https://example.com${path} -H 'Content-Type: application/json' -d '${JSON.stringify(payload)}'`;
+        return `curl -X ${def.method} https://dev.secureserve.com${path} -H 'Content-Type: application/json' -d '${JSON.stringify(payload)}'`;
     }
 
     endpoint.addEventListener('change', () => {
