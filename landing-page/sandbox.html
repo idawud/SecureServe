@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Developer Sandbox — SecureServe</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="index.html">
+                <img src="assets/logo.svg" alt="SecureServe logo" class="logo" />
+                <span class="brand-text">SecureServe</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="btn btn-ghost">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Developer Sandbox</h1>
+        <p class="muted">Try a few core endpoints with mocked responses. No network calls — responses are client-side
+            mocks.</p>
+
+        <div class="sandbox">
+            <div class="panel">
+                <label for="endpoint">Endpoint</label>
+                <select id="endpoint" class="input">
+                    <option value="/v1/transactions/quote">POST /v1/transactions/quote</option>
+                    <option value="/v1/transactions/create">POST /v1/transactions/create</option>
+                    <option value="/v1/transactions/{id}">GET /v1/transactions/{id}</option>
+                    <option value="/v1/partners">GET /v1/partners</option>
+                </select>
+
+                <div id="form-area" aria-live="polite">
+                    <!-- form fields injected here -->
+                </div>
+
+                <div style="margin-top:8px">
+                    <button id="tryBtn" class="copy-btn">Try It</button>
+                    <button id="copyCurl" class="copy-btn" style="background:#3b70a3">Copy curl</button>
+                    <button id="resetBtn" class="btn" style="margin-left:8px">Reset</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Request Preview</h3>
+                <pre id="requestPreview" class="code-block">--</pre>
+
+                <h3>Response</h3>
+                <pre id="responsePanel" class="code-block">--</pre>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p class="muted">Mock sandbox — For production use, obtain API credentials and use partner endpoints.</p>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+
+</html>
