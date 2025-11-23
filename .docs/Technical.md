@@ -18,7 +18,7 @@ Create a decentralized settlement network that interconnects African mobile mone
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Partner Telco │    │   SecureServe Cloud   │    │   Partner Telco │
+│   Partner Telco │    │ SecureServe      │    │   Partner Telco │
 │   (e.g., MTN)   │◄──►│     Platform     │◄──►│   (e.g., M-Pesa)│
 └─────────────────┘    └──────────────────┘    └─────────────────┘
          │                        │                        │
@@ -33,7 +33,7 @@ Create a decentralized settlement network that interconnects African mobile mone
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        SecureServe PLATFORM                          │
+│                     SecureServe PLATFORM                        │
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐ │
 │  │   API      │  │  Forex     │  │ Compliance │  │ Settlement │ │
@@ -42,7 +42,7 @@ Create a decentralized settlement network that interconnects African mobile mone
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐ │
 │  │  Partner   │  │ Transaction│  │  Reporting │  │   Auth &   │ │
-│  │ Management │  │ Orchestrator│  │   & Analytics│ │  Security  │ │
+│  │ Management │  │Orchestrator│  │ & Analytics│  │  Security  │ │
 │  └────────────┘  └────────────┘  └────────────┘  └────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```
