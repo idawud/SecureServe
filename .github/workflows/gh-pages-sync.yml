@@ -1,0 +1,35 @@
+name: Raise MR to gh-pages on changes
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'landing-page/**'
+      - 'package.json'
+
+jobs:
+  raise-mr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # required for branch creation
+
+      - name: Create pull request to gh-pages
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: gh-pages
+          branch: sync-main-to-gh-pages
+          title: 'Sync main → gh-pages'
+          body: |
+            This PR updates the **gh-pages** branch with recent changes from **main**.
+            Triggered because changes were detected in:
+            - `/landing-page/**`
+            - `package.json`
+          commit-message: 'chore: sync main to gh-pages'
+          labels: auto-merge
+          delete-branch: true
