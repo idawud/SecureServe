@@ -1,0 +1,13 @@
+{
+    "name": "secureserve-landing",
+    "version": "1.0.0",
+    "description": "SecureServe - African Payment Gateway Landing Page",
+    "private": true,
+    "scripts": {
+        "dev": "npx http-server landing-page -p 8000",
+        "deploy": "gh-pages -d landing-page"
+    },
+    "devDependencies": {
+        "gh-pages": "^6.1.1"
+    }
+}
