@@ -1,3 +1,9 @@
+'''
+Docstring for reference-data.reference_data_api
+This module implements a FastAPI application that provides endpoints for
+retrieving African forex rates. It includes logging configuration, health check,
+and data processing functionalities.
+'''
 import json
 from pathlib import Path
 import time
@@ -27,6 +33,7 @@ FX_DATA_PATH = Path(__file__).parent / "data" / "forex_rate_api_response.json"
 ## load data from a JSON file at startup
 with open(FX_DATA_PATH, "r") as file:
         FX_DATA: Dict[str, Any] = json.load(file)
+        logger.info("Loaded forex data....")
 
 ###############################################################################
 # API Endpoints
@@ -60,12 +67,16 @@ async def get_forex_rates(
     :return: JSON response with African forex rates
     :rtype: JSONResponse
     '''
+    logger.info("get_forex_rates called with currency: %s", currency)
     ccy = africa_fx_details.keys() 
     if currency:
+        logger.info("Processing forex rates for currency: %s", currency)
         if not currency.upper() in ccy:
             logger.warning("Requested currency %s not supported", currency)
             return JSONResponse(content={"error": f"Currency {currency} not supported"}, status_code=404)
         ccy = [currency.upper()]
+    else:
+        logger.info("Processing forex rates for all supported African currencies")
     return JSONResponse(content=process_fx_data(ccy))
 
 ###############################################################################
