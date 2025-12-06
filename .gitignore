@@ -2,3 +2,5 @@ promt.txt
 node_modules/
 .env
 .env.local
+**/_pycache_/
+**/*.pyc
