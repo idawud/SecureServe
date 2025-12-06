@@ -4,3 +4,9 @@ node_modules/
 .env.local
 **/_pycache_/
 **/*.pyc
+**/*.new
+.vscode/
+.idea/
+.DS_Store
+logs/
+*.log
