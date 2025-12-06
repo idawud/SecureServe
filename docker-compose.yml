@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  reference-data:
+    build:
+      context: ./reference-data
+      dockerfile: Dockerfile
+    container_name: secureserve-ref-data
+    ports:
+      - "8001:8000"
+    environment:
+      - LOG_LEVEL=INFO
+    restart: unless-stopped
