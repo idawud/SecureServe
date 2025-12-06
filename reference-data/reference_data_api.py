@@ -83,7 +83,7 @@ async def get_forex_rates(
 # Helper Functions
 ###############################################################################
     
-def process_fx_data(currencies: List[str] = None) -> Dict[str, Any]:
+def process_fx_data(currencies: List[str] = []) -> Dict[str, Any]:
     '''
     Process forex data to filter by currencies.
     
@@ -92,33 +92,22 @@ def process_fx_data(currencies: List[str] = None) -> Dict[str, Any]:
     :return: Filtered forex data
     :rtype: Dict[str, Any]
     '''
-    # Normalize requested currencies (accepts any iterable of strings)
-    currencies_list = [c.strip().upper() for c in currencies] if currencies else []
     raw_rates = FX_DATA.get("rates", {})
 
-    if currencies_list:
-        # Preserve requested order and return None for missing currencies
-        filtered_rates: Dict[str, Dict[str, Any]] = {}
-        missing: List[str] = []
-        for cur in currencies_list:
-            if cur in raw_rates:
-                filtered_rates[cur] = {"usdRate": raw_rates[cur]}
-            else:
-                filtered_rates[cur] = {"usdRate": None}
-                missing.append(cur)
-        if missing:
-            logger.warning("Requested currencies not found in data: %s", missing)
-
-        rates = filtered_rates
-    else:
-        # Return all rates formatted consistently
-        rates = {k: {"usdRate": v} for k, v in raw_rates.items()}
-    
-    # enrich rates with currency details
-    for cur in rates.keys():
-        details = africa_fx_details.get(cur)
-        if details:
-            rates[cur].update(details)
+    # Preserve requested order and return None for missing currencies
+    rates: Dict[str, Dict[str, Any]] = {}
+    missing: List[str] = []
+    for ccy in currencies:
+        if ccy in raw_rates:
+            rates[ccy] = {"rate": raw_rates[ccy]}
+        else:
+            rates[ccy] = {"rate": None}
+            missing.append(ccy)
+        # update the currency details
+        details = africa_fx_details.get(ccy, {})
+        rates[ccy].update(details)
+    if missing:
+        logger.warning("Requested currencies not found in data: %s", missing)
 
     return {
         "success": True,
